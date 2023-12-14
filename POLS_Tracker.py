@@ -18,10 +18,20 @@ contract = w3.eth.contract(abi=abi)
 polygon_api = st.secrets["POL_API"]
 
 def get_pol_price():
-    url = "https://api.binance.com/api/v3/ticker/price?symbol=MATICUSDT"
-    response = requests.get(url)
+    url = "https://api.polygonscan.com/api"
+
+    PARAMS = {
+        "module": "stats",
+        "action": "maticprice",
+        "apikey": "U6N3PK19T5815DV893JNSBAAK66P7W1TAA"  # Replace with your actual API key
+    }
+
+    # Make the request
+    response = requests.get(url, params=PARAMS)
     data = response.json()
-    return float(data["price"])
+    return data['result']
+
+
 
 def POL_balance_ix(address):
 # Define the API endpoint and parameters
@@ -162,8 +172,8 @@ current_time_plus_8 = current_time + timedelta(hours=8)
 current_time_plus_8 = current_time_plus_8.strftime("%Y-%m-%d %H:%M:%S %Z%z")
 st.write("Last updated (Auto update 10 Second):", current_time_plus_8)
 
-matic_price = get_pol_price()
-st.write("Current Matic Price:", matic_price)
+matic_price = float(get_pol_price()["maticusd"])
+st.write("Current Matic Price:", round(matic_price,3))
 
 st.markdown(f"""
     <div>
